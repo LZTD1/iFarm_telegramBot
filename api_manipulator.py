@@ -1,4 +1,5 @@
-import requests, base64
+import requests, base64, json
+from io import BytesIO
 
 class SwaggerClient:
     def __init__(self, base_url, token):
@@ -126,7 +127,13 @@ class analyticsClient:
             if response.status_code == 200:
                 try:
                     response_json = response.json()
-                    return response_json
+                    print(response_json)
+                    base64_bytes = data['bytes'].encode("ascii")
+                    # print(base64_bytes)
+                    message_bytes = base64.b64decode(base64_bytes)
+                    print(message_bytes)
+
+                    return message_bytes
                 except requests.exceptions.JSONDecodeError:
                     return False
             else:
@@ -135,5 +142,5 @@ class analyticsClient:
             print("Timeout occurred")
             return False
 
-    def getAllUsers(self):
-        return self.make_request("get", "api/get")
+    def getUserStats(self, params=None): # Реализация на бэке сортировки по дате ЕСТЬ)
+        return self.make_request("get", "api/AnaliticsData/GetUsers", params=params)

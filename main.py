@@ -1,5 +1,5 @@
 from aiogram import Bot
-from config import BOT_TKN, BASE_URL_BACKEND,ANALYTICS_URL_BACKED
+from config import BOT_TKN, BASE_URL_BACKEND,ANALYTICS_URL_BACKEND
 from aiogram.dispatcher import Dispatcher
 from aiogram import Bot, types
 import asyncio, logging, datetime
@@ -8,6 +8,9 @@ from database import database
 from language import language
 from keyboards import keyboards, inlineKeyboards
 from api_manipulator import SwaggerClient
+from aiogram.types import ReplyKeyboardRemove, \
+    ReplyKeyboardMarkup, KeyboardButton, \
+    InlineKeyboardMarkup, InlineKeyboardButton
 
 bot = Bot(token=BOT_TKN)
 dp = Dispatcher(bot)
@@ -191,13 +194,38 @@ async def text(message: types.Message):
             if text == langKey['admin_load']:
                 await message.reply(reply_markup=keyboards.admin_load(), text=langKey['admin_load_text'])
             if text == langKey['admin_hotlinemiami']:
+                # EXAMPLE #
+                messagesObj = [
+                    {
+                        "id": 1, # id вопроса
+                        "from": [
+                            12, # id
+                            "Петр Петров Петрович" # FIO
+                        ], # id farmer
+                        "text": "Сломал свой аккаунт, почините!"
+                    }
+                ]
+                markup = InlineKeyboardMarkup(row_width=2)
+                markup.add(InlineKeyboardButton("Ответить",
+                                                callback_data="test"))
+                markup.add(InlineKeyboardButton("Отложить",
+                                                callback_data="test"))
+                await message.reply(reply_markup=markup,reply=False, parse_mode="HTML", text = f"<b>{messagesObj[0]['from'][1]}</b>\n\n<code>{messagesObj[0]['text']}</code>")
+
                 pass
             if text == langKey['admin_uedit']: # Внесение элементов
                 await message.reply(parse_mode = "HTML", text = allText['write_dataofuser'], reply_markup=keyboards.resetKeyboard_admin())
                 await database.changeState(4, message.from_user.id)
 
             if text == langKey['admin_stats']:
-
+                # EXAMPLE #
+                msg = [
+                    "Пользователей всего: 21",
+                    "Зарегестрированных за сегодня: 5",
+                    "Совершено сделок: 123",
+                    "Денежный оборот за сегодня: 5000 руб"
+                ]
+                await message.reply(text="\n".join(msg))
                 # host = "http://192.168.137.96:8080/api/AnaliticsData"
                 # import requests, base64
                 # data = requests.request(method="get", url=host).json()
@@ -211,8 +239,12 @@ async def text(message: types.Message):
                 pass
             if text == langKey['admin_load_stats']:
                 from api_manipulator import analyticsClient
-                analytic = analyticsClient(ANALYTICS_URL_BACKED)
-                genStats = analytic.getGeneralStats()
+                analytic = analyticsClient(ANALYTICS_URL_BACKEND)
+                data = analytic.getUserStats()
+                print(data)
+                #
+                # image_io = BytesIO(message_bytes)
+                # await message.reply_photo(photo=image_io)
                 """""""""
                 genStats = {
                     'bytes' : 'str',
