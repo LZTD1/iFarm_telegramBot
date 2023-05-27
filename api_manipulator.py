@@ -14,7 +14,7 @@ class SwaggerClient:
         url = self.base_url + path
         print(url)
         try:
-            response = requests.request(method, url, json=data, headers=headers, params=params, timeout=1.5)
+            response = requests.request(method, url, json=data, headers=headers, params=params)
             print(response.status_code)
             if response.status_code == 200:
                 if "token" in response.headers:
@@ -32,8 +32,6 @@ class SwaggerClient:
                     else:
                         response_json = {"token": token_value}
                         # print(response_json)
-
-
                     return response_json
                 else:
                     try:
@@ -105,7 +103,8 @@ class SwaggerClient:
 
     def getAllUsers(self):
         return self.make_request("get", "api/auth/all")
-
+    def getAllDiliverys(self):
+        return self.make_request("get", "api/delivery/all")
     def deleteUser(self, userId):
         params = {
             "userId": userId
@@ -141,18 +140,17 @@ class analyticsClient:
         url = self.base_url + path
         print(url)
         try:
-            response = requests.request(method, url, json=data, params=params, timeout=1.5)
+            response = requests.request(method, url, json=data, params=params)
             # print(response.status_code)
             if response.status_code == 200:
                 try:
                     response_json = response.json()
                     print(response_json)
-                    base64_bytes = data['bytes'].encode("ascii")
-                    # print(base64_bytes)
+                    base64_bytes = response_json['bytes'].encode("ascii")
                     message_bytes = base64.b64decode(base64_bytes)
-                    print(message_bytes)
+                    image_io = BytesIO(message_bytes)
 
-                    return message_bytes
+                    return image_io
                 except requests.exceptions.JSONDecodeError:
                     return False
             else:
@@ -163,3 +161,13 @@ class analyticsClient:
 
     def getUserStats(self, params=None): # Реализация на бэке сортировки по дате ЕСТЬ)
         return self.make_request("get", "api/AnaliticsData/GetUsers", params=params)
+    def getStatsTovarovinOblast(self, params=None):
+        # params = {
+        #     'position' : "Ryazan"
+        # }
+        return self.make_request("get", "api/AnaliticsData", params=params)
+    def getVidyTovara(self, params=None):
+        # params = {
+        #     'position' : "Ryazan"
+        # }
+        return self.make_request("get", "api/AnaliticsData/GetProducts", params=params)

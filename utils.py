@@ -20,15 +20,20 @@ def format(input_string, settings_dict):
     formatted_string = input_string.format(**settings_dict)
     return formatted_string
 
-def send_message_with_picture(item):
-    # Отправка сообщения с картинкой
-    photo = item['pic']
-    caption = f"<b>{{company_name}}:</b> <code>{item['company_name']}</code>\n<b>{{product}}:</b> <code>{item['item']}</code>\n<b>{{amnount}}:</b> <code>{item['count']}</code>\n\n<b>{{description}}:</b> <code>{item['about']}</code>"
-    return caption, photo
-
-
 import re
 
+import datetime
+
+def unix_time_to_string(unix_time):
+    dt = datetime.datetime.fromtimestamp(unix_time)
+    return dt.strftime('%Y-%m-%d %H:%M')
+
+def tagsToString( tags, tagsLocalization ):
+    string = ""
+    for val in tagsLocalization:
+        if val in tags:
+            string += tagsLocalization[val] + " "
+    return string
 
 def validate_email(email):
     # Паттерн для проверки валидности email

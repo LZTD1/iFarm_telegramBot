@@ -48,101 +48,156 @@ async def text(message: types.Message):
             await message.reply(reply=False, text=allText['start_true'], reply_markup=keyboards.mainKeyboard())
         elif STATE == "0":
             if text == langKey['to_request']:  # Мои отправленные заявки
-                TO_REQUEST = [
-                    {
-                        "company_name": "ИП \"Суворовское\"",
-                        "item": "Рис, 1кг",
-                        "count": 1000,
-                        "about": "Здравствуйте, я бы хотел заказать у вас 1 тонну риса, хочу договориться о доставке в Рязанскую область",
-                        "pic": "https://plus.unsplash.com/premium_photo-1674654419403-1a80edb26881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                    },
-                    {
-                        "company_name": "Фермерское хозяйство \"Зеленая поляна\"",
-                        "item": "Мед, 500г",
-                        "count": 50,
-                        "about": "Добрый день, интересует покупка 50 банок натурального меда, желательно разных сортов. Необходима доставка в Москву.",
-                        "pic": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
-                    },
-                    {
-                        "company_name": "ООО \"Ферма Успеха\"",
-                        "item": "Свежие овощи",
-                        "count": 200,
-                        "about": "Здравствуйте, хотел бы заказать 200 кг свежих овощей: морковь, картофель, лук. Прошу уточнить возможность доставки в Санкт-Петербург.",
-                        "pic": "https://images.unsplash.com/photo-1590779033100-9f60a05a013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"
-                    },
-                    {
-                        "company_name": "Колхоз \"Золотая нива\"",
-                        "item": "Молоко, 1л",
-                        "count": 1000,
-                        "about": "Добрый день! Нам нужно закупить 1000 литров свежего коровьего молока. Мы находимся в Краснодарском крае, просим уточнить возможность доставки.",
-                        "pic": "https://images.unsplash.com/photo-1611211301828-be4b317d0707?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"
-                    },
-                    {
-                        "company_name": "ИП \"Золотая рыбка\"",
-                        "item": "Морепродукты",
-                        "count": 500,
-                        "about": "Привет! Хотим приобрести 500 кг разнообразных морепродуктов: креветки, мидии, осьминоги. Необходима доставка в город Калининград.",
-                        "pic": "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
-                    }
-                ]
-                from utils import send_message_with_picture, format
+                # TO_REQUEST = [
+                #     {
+                #         "company_name": "ИП \"Суворовское\"",
+                #         "item": "Рис, 1кг",
+                #         "count": 1000,
+                #         "about": "Здравствуйте, я бы хотел заказать у вас 1 тонну риса, хочу договориться о доставке в Рязанскую область",
+                #         "pic": "https://plus.unsplash.com/premium_photo-1674654419403-1a80edb26881?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                #     },
+                #     {
+                #         "company_name": "Фермерское хозяйство \"Зеленая поляна\"",
+                #         "item": "Мед, 500г",
+                #         "count": 50,
+                #         "about": "Добрый день, интересует покупка 50 банок натурального меда, желательно разных сортов. Необходима доставка в Москву.",
+                #         "pic": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+                #     },
+                #     {
+                #         "company_name": "ООО \"Ферма Успеха\"",
+                #         "item": "Свежие овощи",
+                #         "count": 200,
+                #         "about": "Здравствуйте, хотел бы заказать 200 кг свежих овощей: морковь, картофель, лук. Прошу уточнить возможность доставки в Санкт-Петербург.",
+                #         "pic": "https://images.unsplash.com/photo-1590779033100-9f60a05a013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"
+                #     },
+                #     {
+                #         "company_name": "Колхоз \"Золотая нива\"",
+                #         "item": "Молоко, 1л",
+                #         "count": 1000,
+                #         "about": "Добрый день! Нам нужно закупить 1000 литров свежего коровьего молока. Мы находимся в Краснодарском крае, просим уточнить возможность доставки.",
+                #         "pic": "https://images.unsplash.com/photo-1611211301828-be4b317d0707?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"
+                #     },
+                #     {
+                #         "company_name": "ИП \"Золотая рыбка\"",
+                #         "item": "Морепродукты",
+                #         "count": 500,
+                #         "about": "Привет! Хотим приобрести 500 кг разнообразных морепродуктов: креветки, мидии, осьминоги. Необходима доставка в город Калининград.",
+                #         "pic": "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
+                #     }
+                # ]
+                #
+                allDeliverys = toAPI.getAllDiliverys()
 
-                toPaste = {
-                    "company_name": allText['request_company_name'],
-                    "product": allText['request_product'],
-                    "amnount": allText['request_amnount'],
-                    "description": allText['request_description'],
+                tagsLocalization = {
+                    'EKO' : allText['EKO'],
+                    'POST' : allText['POST'],
+                    'HALAL' : allText['HALAL'],
                 }
-                for item in TO_REQUEST:
-                    caption, photo = send_message_with_picture(item)
-                    caption = format(caption, toPaste)
-                    await bot.send_photo(caption=caption,
-                                         photo=photo,
-                                         chat_id=message.from_user.id,
-                                         parse_mode="HTML",
-                                         reply_markup=inlineKeyboards.closeMessage()
-                                         )
+                tagsUnit = {
+                    'KG' : allText['tags_kg'],
+                    'PIECES' : allText['tags_pieces']
+                }
+                tagsPayment = {
+                    'CASH' : allText['tags_SBP'],
+                    'CARD' : allText['tags_CARD'],
+                    'SBP' : allText['tags_CASH']
+                }
+                from utils import format, tagsToString, unix_time_to_string
+                flag = False
+
+                myUser = toAPI.getCurrent()
+                for val in allDeliverys:
+                    if val['consumerId'] == myUser['id']:
+                        flag = True
+                        toPaste = format(allText['card_deliverys'], {
+                            'product_name' : val['product']['name'],
+                            'product_description' : val['product']['description'],
+                            'product_tags' : tagsToString(tags=val['product']['tags'], tagsLocalization=tagsLocalization),
+                            'count' : str(val['count']),
+                            'product_unit': tagsToString(tags=val['product']['unit'], tagsLocalization=tagsUnit),
+                            'paymentType': tagsToString(tags= [ val['paymentType'] ], tagsLocalization=tagsPayment),
+                            'date': unix_time_to_string( val['date'] ),
+                            'adressFrom' : val['adressFrom'],
+                            'adressTo' : val['adressTo'],
+                        })
+                        if val['product']['image']:
+                            await bot.send_photo(caption=toPaste,
+                                                 photo=val['product']['image'],
+                                                 chat_id=message.from_user.id,
+                                                 parse_mode="HTML",
+                                                 reply_markup=inlineKeyboards.closeMessage()
+                                                 )
+                        else:
+                            await bot.send_message(text=toPaste,
+                                                 chat_id=message.from_user.id,
+                                                 parse_mode="HTML",
+                                                 reply_markup=inlineKeyboards.closeMessage()
+                                                 )
+
+                if not flag:
+                    await message.reply(allText['notDeliverys'])
             elif text == langKey['me_request']:  # Рассмотреть заявки
-                ME_REQUEST = [
-                    {
-                        "company_name": "ИП \"Родина\"",
-                        "item": "Сыр, 100г",
-                        "count": 100,
-                        "about": "Здравствуйте, наслышан о вашей компании. Хочу заказать в Рязань. Свяжитесь со мной пожалуйста",
-                        "pic": "https://images.unsplash.com/photo-1631379578550-7038263db699?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=874&q=80"
-                    },
-                    {
-                        "company_name": "ООО \"Молочная усадьба\"",
-                        "item": "Творог, 500г",
-                        "count": 50,
-                        "about": "Добрый день! Узнал о вашем вкусном твороге и хотел бы сделать заказ. Живу в Москве. Ожидаю вашего ответа!",
-                        "pic": "https://thumbs.dreamstime.com/b/healthy-russian-breakfast-glass-bowl-plain-tvorog-bowl-plain-russian-cottage-cheese-called-tvorog-149363165.jpg"
-                    },
-                    {
-                        "company_name": "Фермерское хозяйство \"Молочный рай\"",
-                        "item": "Масло, 250г",
-                        "count": 20,
-                        "about": "Приветствую! Слышал о вашем натуральном масле и хотел бы приобрести его. Живу в Санкт-Петербурге. Буду ждать от вас сообщения!",
-                        "pic": "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
-                    }
-                ]
-                from utils import send_message_with_picture, format
+                allDeliverys = toAPI.getAllDiliverys()
 
-                toPaste = {
-                    "company_name": allText['request_company_name'],
-                    "product": allText['request_product'],
-                    "amnount": allText['request_amnount'],
-                    "description": allText['request_description'],
+                tagsLocalization = {
+                    'EKO': allText['EKO'],
+                    'POST': allText['POST'],
+                    'HALAL': allText['HALAL'],
                 }
-                for item in ME_REQUEST:
-                    caption, photo = send_message_with_picture(item)
-                    caption = format(caption, toPaste)
-                    await bot.send_photo(caption=caption,
-                                         photo=photo,
-                                         chat_id=message.from_user.id,
-                                         parse_mode="HTML",
-                                         reply_markup=inlineKeyboards.closeMessage()
-                                         )
+                tagsCities = {
+                    'Ryazan' : 1
+                }
+                tagsUnit = {
+                    'KG': allText['tags_kg'],
+                    'PIECES': allText['tags_pieces']
+                }
+                tagsPayment = {
+                    'CASH': allText['tags_SBP'],
+                    'CARD': allText['tags_CARD'],
+                    'SBP': allText['tags_CASH']
+                }
+                tagsCityes = {
+                    'Ryazan' : "Рязань",
+                    'Moscow' : "Москва",
+                }
+                myUser = toAPI.getCurrent()
+                from utils import format, tagsToString, unix_time_to_string
+                flag = False
+                for val in allDeliverys:
+                    if val['farmerId'] == myUser['id']:
+                        flag = True
+                        toPaste = format(allText['card_deliverys'], {
+                            'product_name': val['product']['name'],
+                            'product_description': val['product']['description'],
+                            'product_tags': tagsToString(tags=val['product']['tags'],
+                                                         tagsLocalization=tagsLocalization),
+                            'count': str(val['count']),
+                            'product_unit': tagsToString(tags=val['product']['unit'], tagsLocalization=tagsUnit),
+                            'paymentType': tagsToString(tags=[val['paymentType']], tagsLocalization=tagsPayment),
+                            'date': unix_time_to_string(val['date']),
+                            'adressFrom': val['adressFrom'],
+                            #'adressFrom': tagsToString(tags=[val['adressFrom']], tagsLocalization=tagsCityes),
+                            'adressTo': val['adressTo'],
+                            #'adressTo': tagsToString(tags=[val['adressTo']], tagsLocalization=tagsCityes),
+                        })
+                        print(val['adressTo'])
+                        print(val['adressFrom'])
+                        if val['product']['image']:
+                            await bot.send_photo(caption=toPaste,
+                                                 photo=val['product']['image'],
+                                                 chat_id=message.from_user.id,
+                                                 parse_mode="HTML",
+                                                 reply_markup=inlineKeyboards.closeMessage()
+                                                 )
+                        else:
+                            await bot.send_message(text=toPaste,
+                                                   chat_id=message.from_user.id,
+                                                   parse_mode="HTML",
+                                                   reply_markup=inlineKeyboards.closeMessage()
+                                                   )
+
+                if not flag:
+                    await message.reply(allText['notDeliverys'])
             elif text == langKey['settings']:
                 checkBox = [
                     query['push'],
@@ -254,16 +309,18 @@ async def text(message: types.Message):
                 from api_manipulator import analyticsClient
                 analytic = analyticsClient(ANALYTICS_URL_BACKEND)
                 data = analytic.getUserStats()
-                print(data)
-                #
-                # image_io = BytesIO(message_bytes)
-                # await message.reply_photo(photo=image_io)
-                """""""""
-                genStats = {
-                    'bytes' : 'str',
-                    'text' : '',
-                }
-                """""""""
+
+                await message.reply_photo(photo=data)
+            if text == langKey['admin_load_geo']:
+                from api_manipulator import analyticsClient
+                analytic = analyticsClient(ANALYTICS_URL_BACKEND)
+                data = analytic.getStatsTovarovinOblast()
+                await message.reply_photo(photo=data)
+            if text == langKey['admin_load_product']:
+                from api_manipulator import analyticsClient
+                analytic = analyticsClient(ANALYTICS_URL_BACKEND)
+                data = analytic.getVidyTovara()
+                await message.reply_photo(photo=data)
         elif STATE == "4":
             if text == langKey['admin_courses_getAll']:
                 response = toAPI.getAllCourses()
@@ -466,7 +523,7 @@ async def callback(callback_query: types.CallbackQuery):
         await database.changeState(state="course_edit_"+"description_"+str(id),uid=callback_query.from_user.id)
 
 async def main():
-    await database.connect("postgresql://username:password@192.168.137.149:5433/tg_bot")
+    await database.connect("postgresql://username:password@farm.null.moe:5433/tg_bot")
     await dp.start_polling(bot)
     await database.close()
 
