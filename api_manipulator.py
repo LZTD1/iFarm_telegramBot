@@ -15,6 +15,7 @@ class SwaggerClient:
         print(url)
         try:
             response = requests.request(method, url, json=data, headers=headers, params=params, timeout=1.5)
+            print(response.status_code)
             if response.status_code == 200:
                 if "token" in response.headers:
                     token_value = response.headers['token']
@@ -35,11 +36,17 @@ class SwaggerClient:
 
                     return response_json
                 else:
-                    return response.json()
+                    try:
+                        response_json = response.json()
+                    except requests.exceptions.JSONDecodeError:
+                        response_json = {}
+                    return response_json
         except requests.Timeout:
             print("Timeout occurred")
             return False
 
+    def getAllCourses(self):
+        return self.make_request("get", "api/course/allCoursers")
     def updateUser(self, id, fullName, bio):
         data = {
             "id": id,
@@ -114,6 +121,18 @@ class SwaggerClient:
             "id": id
         }
         return self.make_request("post", "api/auth/byId", params=params)
+    def getCoursebyID(self, id):
+        params = {
+            "id": id
+        }
+        return self.make_request("get", "api/course/geCourse", params=params)
+    def deleteCoursebyID(self, id):
+        params = {
+            "id": id
+        }
+        return self.make_request("post", "api/course/deleteCourse", params=params)
+    def updateCoursebyID(self, data):
+        return self.make_request("post", "api/course/updateCourse", data)
 class analyticsClient:
     def __init__(self, base_url):
         self.base_url = base_url

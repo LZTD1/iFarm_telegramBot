@@ -17,6 +17,7 @@ class database:
             state, uid)
         return True
     async def changeState(self, state, uid):
+        state = str(state)
         await self.conn.execute(
             "UPDATE public.users SET state_user = $1 WHERE uid = $2",
             state, uid)

@@ -40,11 +40,13 @@ async def text(message: types.Message):
         inlineKeyboards.changeLocalization(state=localization.getLanguage())
 
         text = message.text
+        print(STATE)
+        print(type(STATE))
         if text.lower() == "/start" or text == langKey['reset_key']:
             await database.changeState(0, message.from_user.id)
-            STATE = 0
+            STATE = "0"
             await message.reply(reply=False, text=allText['start_true'], reply_markup=keyboards.mainKeyboard())
-        elif STATE == 0:
+        elif STATE == "0":
             if text == langKey['to_request']:  # Мои отправленные заявки
                 TO_REQUEST = [
                     {
@@ -154,12 +156,15 @@ async def text(message: types.Message):
                                     reply_markup=inlineKeyboards.settings(checkBox, country))
             elif text.lower() == "/admin":
                 myUser = toAPI.getCurrent()
-                if 'ADMIN' in myUser['roles']:
-                    await database.changeState(3, message.from_user.id)
-                    await message.reply(reply_markup=keyboards.adminKeyboard(), text=allText['start_admin'])
+                try:
+                    if 'ADMIN' in myUser['roles']:
+                        await database.changeState(3, message.from_user.id)
+                        await message.reply(reply_markup=keyboards.adminKeyboard(), text=allText['start_admin'])
+                except TypeError as e:
+                    print(e)
             else:
                 await message.reply(allText['unknown_command'])
-        elif STATE == 1: # enter email addr
+        elif STATE == "1": # enter email addr
             from utils import validate_email, format
             if validate_email(text):
                 send = format(allText['auth_text'], {
@@ -171,7 +176,7 @@ async def text(message: types.Message):
                 await message.reply(reply_markup=inlineKeyboards.getAuthKeyboard(), text=send, parse_mode="HTML")
             else:
                 await message.reply(allText['bad_text'])
-        elif STATE == 2:
+        elif STATE == "2":
             EMAIL = query['email']
             response = toAPI.signIn(email = EMAIL, password=text)
             if response:
@@ -188,9 +193,18 @@ async def text(message: types.Message):
             print(response)
         elif text == langKey['admin_to_main']:
             await database.changeState(3, message.from_user.id)
-            STATE = 3
+            STATE = "3"
             await message.reply(reply_markup=keyboards.adminKeyboard(), text=allText['start_admin'])
-        elif STATE == 3: # IN ADMIN KEYBOARD
+        elif text == langKey['admin_to_uedit_course']:
+            await database.changeState(4, message.from_user.id)
+            STATE = "4"
+            await message.reply(reply_markup=keyboards.getadmin_courseskeyboard(), text=allText['admin_uedit_text'])
+        elif text == langKey['admin_to_uedit']:
+            await database.changeState(4, message.from_user.id)
+            STATE = "4"
+            await message.reply(parse_mode="HTML", text=allText['admin_uedit_text'],
+                                reply_markup=keyboards.getadmin_changekeyboards())
+        elif STATE == "3": # IN ADMIN KEYBOARD
             if text == langKey['admin_load']:
                 await message.reply(reply_markup=keyboards.admin_load(), text=langKey['admin_load_text'])
             if text == langKey['admin_hotlinemiami']:
@@ -214,9 +228,8 @@ async def text(message: types.Message):
 
                 pass
             if text == langKey['admin_uedit']: # Внесение элементов
-                await message.reply(parse_mode = "HTML", text = allText['write_dataofuser'], reply_markup=keyboards.resetKeyboard_admin())
+                await message.reply(parse_mode = "HTML", text = allText['admin_uedit_text'], reply_markup=keyboards.getadmin_changekeyboards())
                 await database.changeState(4, message.from_user.id)
-
             if text == langKey['admin_stats']:
                 # EXAMPLE #
                 msg = [
@@ -251,7 +264,30 @@ async def text(message: types.Message):
                     'text' : '',
                 }
                 """""""""
-        elif STATE == 4:
+        elif STATE == "4":
+            if text == langKey['admin_courses_getAll']:
+                response = toAPI.getAllCourses()
+                print(response)
+                if len(response) != 0:
+                    from utils import format
+                    for course in response:
+                        toSend = format(langKey['admin_courses_getText'], course)
+                        await message.reply(disable_web_page_preview=True,text = toSend, reply_markup=inlineKeyboards.getKeyboardBottomCourse(course['id']))
+                else:
+                    await message.reply(langKey['admin_courses_getEmpty'])
+            if text == langKey['diliveres']: # Если поменять необходимо доставки
+                pass
+            if text == langKey['product']: # Если поменять необходимо продукт
+                pass
+            if text == langKey['course']: # Если курс
+                await message.reply(parse_mode="HTML", text=allText['admin_uedit_text'],
+                                    reply_markup=keyboards.getadmin_courseskeyboard())
+                # await database.changeState(6, message.from_user.id)
+            if text == langKey['user']:
+                await message.reply(parse_mode="HTML", text=allText['write_dataofuser'],
+                                    reply_markup=keyboards.resetKeyboard_admin())
+                await database.changeState(5, message.from_user.id)
+        elif STATE == "5": # Поиск юзера по email
             searched = toAPI.searchEmail(email = text)
             if searched:
                 from utils import format
@@ -265,6 +301,22 @@ async def text(message: types.Message):
                                     reply_markup=inlineKeyboards.getUserChanges(roles=searched['roles'], id=searched['id']), parse_mode="HTML")
             else:
                 await message.reply(text = allText['incorrect_email'])
+        elif STATE == "6": # Поиск курса по ID
+            pass
+        elif STATE.startswith("course_edit_"):
+            value = STATE[len("course_edit_"):].split("_")
+
+            print(value[0])
+            print(text)
+            response = toAPI.getCoursebyID(value[1])
+            response[value[0]] = text
+
+            print(response)
+            if toAPI.updateCoursebyID( data = response):
+                from utils import format
+                toSend = format(langKey['admin_courses_getText'], response)
+                await message.reply(disable_web_page_preview=True, text=toSend,
+                                    reply_markup=inlineKeyboards.getKeyboardBottomCourse(response['id']))
 
 @dp.callback_query_handler()
 async def callback(callback_query: types.CallbackQuery):
@@ -388,6 +440,30 @@ async def callback(callback_query: types.CallbackQuery):
                             parse_mode="HTML", chat_id=callback_query.from_user.id,
                                     message_id=callback_query.message.message_id)
         pass
+    if callback_query.data.startswith(langKey['admin_course_deleteCourse'][1]):
+        id = callback_query.data[len(langKey['admin_course_deleteCourse'][1]):]
+        response = toAPI.deleteCoursebyID(id)
+        if response == {}:
+            await bot.edit_message_text(text=allText['sucessfull_deleted'],
+                                        chat_id=callback_query.from_user.id,
+                                        message_id=callback_query.message.message_id)
+        else:
+            await bot.answer_callback_query(callback_query_id=callback_query.id, text=allText['errorDeleting'])
+    if callback_query.data.startswith(langKey['admin_course_editLink'][1]):
+        id = callback_query.data[len(langKey['admin_course_editLink'][1]):]
+        await bot.delete_message(chat_id=callback_query.from_user.id, message_id=callback_query.message.message_id )
+        await bot.send_message(reply_markup=keyboards.getOnlygotoCourse() ,parse_mode='HTML',text=langKey['wait_input_link'], chat_id=callback_query.from_user.id )
+        await database.changeState(state="course_edit_"+"link_"+str(id),uid=callback_query.from_user.id)
+    if callback_query.data.startswith(langKey['admin_course_header'][1]):
+        id = callback_query.data[len(langKey['admin_course_header'][1]):]
+        await bot.delete_message(chat_id=callback_query.from_user.id, message_id=callback_query.message.message_id )
+        await bot.send_message(reply_markup=keyboards.getOnlygotoCourse() ,parse_mode='HTML',text=langKey['wait_input_header'], chat_id=callback_query.from_user.id )
+        await database.changeState(state="course_edit_"+"header_"+str(id),uid=callback_query.from_user.id)
+    if callback_query.data.startswith(langKey['admin_course_description'][1]):
+        id = callback_query.data[len(langKey['admin_course_description'][1]):]
+        await bot.delete_message(chat_id=callback_query.from_user.id, message_id=callback_query.message.message_id )
+        await bot.send_message(reply_markup=keyboards.getOnlygotoCourse() ,parse_mode='HTML',text=langKey['wait_input_description'], chat_id=callback_query.from_user.id)
+        await database.changeState(state="course_edit_"+"description_"+str(id),uid=callback_query.from_user.id)
 
 async def main():
     await database.connect("postgresql://username:password@192.168.137.149:5433/tg_bot")

@@ -11,7 +11,6 @@ class keyboards():
     def changeLocalization(self, state):
         self.localization.setLanguage(state)  # Получаение русской локализации
         _, self.keyboardLang = self.localization.getText()
-
     def mainKeyboard(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add(KeyboardButton(self.keyboardLang['me_request']), KeyboardButton(self.keyboardLang['to_request']))
@@ -35,7 +34,23 @@ class keyboards():
         return markup
     def resetKeyboard_admin(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.row( self.keyboardLang['admin_to_uedit'] )
+        return markup
+    def getadmin_changekeyboards(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.row( self.keyboardLang['diliveres'],self.keyboardLang['product'] )
+        markup.row( self.keyboardLang['course'],self.keyboardLang['user'] )
         markup.row( self.keyboardLang['admin_to_main'] )
+        return markup
+    def getadmin_courseskeyboard(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.row(self.keyboardLang['admin_courses_getAll'], self.keyboardLang['admin_courses_getbyid'])
+        markup.row(self.keyboardLang['admin_courses_addCourse'])
+        markup.row(self.keyboardLang['admin_to_uedit'])
+        return markup
+    def getOnlygotoCourse(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.row(self.keyboardLang['admin_to_uedit_course'])
         return markup
 class inlineKeyboards():
     def __init__(self, setLang=0):
@@ -96,3 +111,11 @@ class inlineKeyboards():
 
 
         return markup
+    def getKeyboardBottomCourse(self, id):
+        markup = InlineKeyboardMarkup(row_width=3)
+        markup.add( InlineKeyboardButton(text=self.keyboardLang['admin_course_deleteCourse'][0],callback_data=self.keyboardLang['admin_course_deleteCourse'][1] + str(id)) )
+        markup.add( InlineKeyboardButton(text=self.keyboardLang['admin_course_editLink'][0],callback_data=self.keyboardLang['admin_course_editLink'][1] + str(id)) )
+        markup.add( InlineKeyboardButton(text=self.keyboardLang['admin_course_header'][0],callback_data=self.keyboardLang['admin_course_header'][1] + str(id)) )
+        markup.add( InlineKeyboardButton(text=self.keyboardLang['admin_course_description'][0],callback_data=self.keyboardLang['admin_course_description'][1] + str(id)) )
+        return markup
+

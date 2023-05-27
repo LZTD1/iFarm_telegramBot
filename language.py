@@ -22,11 +22,13 @@ class language:
                 "access_language": "Список возможных языков:",
                 "success_language" : "Успешно изменен язык!",
 
+                "admin_uedit_text" : "Выберите параметр для редактирования",
                 "request_company_name" : "Название компании",
                 "request_product" : "Наименование продукта",
                 "request_amnount" : "Количество",
                 "request_description" : "Запрос",
                 "non_writed" : "Не записан",
+                "gotoCurseList" : "Вернуться в ",
                 "wait_input" : "<b>Ожидается ввод</b>",
                 "bad_text" : "Некорректное значение, попробуйте еще раз",
                 "read_line" : "Ожидаю вашего ввода...",
@@ -34,12 +36,47 @@ class language:
                 "incorrect_email": "Неверный email!",
                 "write_dataofuser" : "Напишите <code>email</code> пользователя",
                 "start_admin" : "Админская панель:",
+                "errorDeleting" : "Неудачное удаление",
+                "sucessfull_deleted" : "Удачное удаление",
                 "success_auth" : "<b>{fullName}</b>!\n\nДобро пожаловать в вспомогательный бот!",
                 "auth_text" : "Ваш e-mail: <b>{email}</b>\nВаш пароль: <b>{pwd}</b>",
                 "admin_input_user" : "<b>{fullName}</b>\n\n<i>{bio}</i>\n\nРегистрация: <code>{dateRegistration}</code>\nРоли: <b>{roles}</b>\n\n<i>Напишите еще email или выйдите из меню</i>",
             }
             keyboards = {
                 # Admin keyboards
+                "diliveres" : "Доставки",
+                "product" : "Продукты",
+                "course" : "Курсы",
+                "user" : "Пользователи",
+
+                "admin_course_deleteCourse" : [
+                    "Удалить",
+                    "delete_course_"
+                ],
+                "admin_course_editLink" : [
+                    "Изменить ссылку",
+                    "editlink_course_"
+                ],
+                "admin_course_header": [
+                    "Изменить заголовок",
+                    "editheader_course_"
+                ],
+                "admin_course_description": [
+                    "Изменить описание",
+                    "editdescription_course_"
+                ],
+
+                "admin_courses_getText" : "Ссылка: {link}\nЗаголовок: {header}\nОписание: {description}",
+                "admin_courses_getEmpty" : "Никаких курсов нет!",
+
+                "admin_courses_getAll" : "Все курсы",
+                "admin_courses_getbyid" : "Редактировать курс",
+                "admin_courses_addCourse" : "Добавить курс",
+
+                "wait_input_description" : "Ожидаю описание",
+                "wait_input_link" : "Ожидаю ссылку",
+                "wait_input_header" : "Ожидаю заголовок",
+
                 "admin_load" : "Выгрузка",
                 "admin_hotlinemiami" : "Горячая линия",
                 "admin_uedit" : "Внесение изменений",
@@ -52,6 +89,8 @@ class language:
                 # "admin_stats_farmers" : "Рейтинг и отзывы фермера",
 
                 "admin_to_main" : "⬅️ АП",
+                "admin_to_uedit" : "⬅️ Категории",
+                "admin_to_uedit_course" : "⬅️ Курсы",
 
                 "reset_key" : "↩️ Вернуться в меню",
                 "email_change" : ["Нажмите для ввода e-mail", "change_email_"],
